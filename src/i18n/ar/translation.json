@@ -1,0 +1,188 @@
+{
+  "common": {
+    "success": "تمت العملية بنجاح",
+    "error": "حدث خطأ",
+    "notFound": "المورد غير موجود",
+    "unauthorized": "وصول غير مصرح به",
+    "forbidden": "الوصول محظور",
+    "badRequest": "طلب غير صالح",
+    "internalError": "خطأ داخلي في الخادم",
+    "conflict": "تعارض في المورد",
+    "tooManyRequests": "طلبات كثيرة جدًا، يرجى المحاولة مرة أخرى لاحقًا",
+    "duplicateEntry": "هذا السجل موجود بالفعل",
+    "invalidReference": "مرجع غير صالح للمورد ذي الصلة",
+    "missingRelation": "المورد ذو الصلة المطلوب مفقود"
+  },
+  "auth": {
+    "loginSuccess": "تم تسجيل الدخول بنجاح",
+    "logoutSuccess": "تم تسجيل الخروج بنجاح",
+    "registrationSuccess": "تم التسجيل بنجاح",
+    "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+    "emailAlreadyExists": "البريد الإلكتروني موجود بالفعل",
+    "passwordResetSent": "تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني",
+    "passwordResetSuccess": "تم إعادة تعيين كلمة المرور بنجاح",
+    "tokenExpired": "انتهت صلاحية الرمز",
+    "tokenInvalid": "رمز غير صالح",
+    "accountNotVerified": "الحساب غير موثق",
+    "accountSuspended": "الحساب معلق",
+    "invalidResetToken": "رمز إعادة التعيين غير صالح أو منتهي الصلاحية"
+  },
+  "validation": {
+    "emailInvalid": "تنسيق البريد الإلكتروني غير صالح",
+    "passwordTooShort": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
+    "passwordTooWeak": "يجب أن تحتوي كلمة المرور على أحرف كبيرة وصغيرة وأرقام",
+    "required": "{{field}} مطلوب",
+    "minLength": "يجب أن يكون {{field}} {{min}} أحرف على الأقل",
+    "maxLength": "يجب ألا يتجاوز {{field}} {{max}} حرفًا",
+    "isEmail": "يجب أن يكون {{field}} بريدًا إلكترونيًا صالحًا",
+    "isString": "يجب أن يكون {{field}} نصًا",
+    "isNumber": "يجب أن يكون {{field}} رقمًا",
+    "isBoolean": "يجب أن يكون {{field}} قيمة منطقية",
+    "isEnum": "يجب أن يكون {{field}} واحدًا من: {{values}}",
+    "min": "يجب أن يكون {{field}} {{min}} على الأقل",
+    "max": "يجب ألا يتجاوز {{field}} {{max}}",
+    "isLatitude": "يجب أن يكون {{field}} خط عرض صالح (-90 إلى 90)",
+    "isLongitude": "يجب أن يكون {{field}} خط طول صالح (-180 إلى 180)",
+    "isPhoneNumber": "يجب أن يكون {{field}} رقم هاتف صالح",
+    "isUrl": "يجب أن يكون {{field}} رابط صالح",
+    "isDate": "يجب أن يكون {{field}} تاريخ صالح",
+    "isArray": "يجب أن يكون {{field}} مصفوفة",
+    "arrayMinSize": "يجب أن يحتوي {{field}} على {{min}} عنصر على الأقل",
+    "arrayMaxSize": "يجب ألا يحتوي {{field}} على أكثر من {{max}} عنصر"
+  },
+  "otp": {
+    "sent": "تم إرسال رمز التحقق بنجاح",
+    "verified": "تم التحقق من الرمز بنجاح",
+    "invalid": "رمز التحقق غير صالح",
+    "expired": "انتهت صلاحية رمز التحقق",
+    "locked": "محاولات فاشلة كثيرة جدًا. يرجى المحاولة مرة أخرى لاحقًا",
+    "cooldown": "يرجى الانتظار قبل طلب رمز تحقق آخر",
+    "alreadyVerified": "الحساب موثق بالفعل"
+  },
+  "user": {
+    "profileUpdated": "تم تحديث الملف الشخصي بنجاح",
+    "roleChanged": "تم تغيير دور المستخدم بنجاح",
+    "notFound": "المستخدم غير موجود",
+    "suspended": "حساب المستخدم معلق",
+    "cannotChangeOwnRole": "لا يمكنك تغيير دورك الخاص"
+  },
+  "field": {
+    "created": "تم إنشاء الملعب بنجاح",
+    "updated": "تم تحديث الملعب بنجاح",
+    "deleted": "تم حذف الملعب بنجاح",
+    "retrieved": "تم استرجاع الملعب بنجاح",
+    "listRetrieved": "تم استرجاع الملاعب بنجاح",
+    "searchCompleted": "تم إكمال البحث عن الملاعب بنجاح",
+    "notFound": "الملعب غير موجود",
+    "notOwner": "أنت لا تملك هذا الملعب",
+    "invalidCoordinates": "إحداثيات جغرافية غير صالحة",
+    "updateFailed": "فشل تحديث الملعب",
+    "imageUploaded": "تم رفع الصورة بنجاح",
+    "imageDeleted": "تم حذف الصورة بنجاح",
+    "invalidFileType": "نوع الملف غير صالح. يُسمح فقط بـ JPEG و PNG و WebP",
+    "fileTooLarge": "حجم الملف يتجاوز حد 5 ميجابايت",
+    "maxImagesReached": "تم الوصول إلى الحد الأقصى من 10 صور لكل ملعب",
+    "imageNotFound": "الصورة غير موجودة",
+    "noFileProvided": "لم يتم توفير ملف"
+  },
+  "timeSlot": {
+    "created": "تم إنشاء الفترة الزمنية بنجاح",
+    "updated": "تم تحديث الفترة الزمنية بنجاح",
+    "deleted": "تم حذف الفترة الزمنية بنجاح",
+    "retrieved": "تم استرجاع الفترة الزمنية بنجاح",
+    "listRetrieved": "تم استرجاع الفترات الزمنية بنجاح",
+    "bulkCreated": "تم إنشاء الفترات الزمنية بنجاح بشكل جماعي",
+    "notFound": "الفترة الزمنية غير موجودة",
+    "startTimeBeforeEndTime": "يجب أن يكون وقت البداية قبل وقت النهاية",
+    "overlappingSlot": "الفترة الزمنية تتداخل مع فترة موجودة على نفس الملعب والتاريخ",
+    "overlappingSlotDetails": "الفترة الزمنية تتداخل مع فترة موجودة في {{date}} من {{startTime}} إلى {{endTime}}",
+    "alreadyBooked": "الفترة الزمنية محجوزة بالفعل",
+    "notAvailable": "الفترة الزمنية غير متاحة",
+    "cannotModifyBooked": "لا يمكن تعديل أو حذف فترة زمنية محجوزة",
+    "invalidDateRange": "يجب أن يكون تاريخ البداية قبل أو يساوي تاريخ النهاية",
+    "invalidDaysOfWeek": "يجب أن تكون أيام الأسبوع بين 0 (الأحد) و 6 (السبت)",
+    "noDatesGenerated": "لا توجد تواريخ تطابق أيام الأسبوع المحددة في نطاق التاريخ المحدد"
+  },
+  "booking": {
+    "created": "تم إنشاء الحجز بنجاح",
+    "confirmed": "تم تأكيد الحجز",
+    "cancelled": "تم إلغاء الحجز",
+    "checkedIn": "تم تسجيل الوصول للحجز",
+    "completed": "تم إكمال الحجز",
+    "notFound": "الحجز غير موجود",
+    "alreadyBooked": "الفترة الزمنية محجوزة بالفعل",
+    "paymentPending": "الدفع قيد الانتظار",
+    "paymentFailed": "فشل الدفع",
+    "cannotCancel": "لا يمكن إلغاء هذا الحجز",
+    "paymentDeadlineExpired": "انتهت مهلة الدفع",
+    "invalidStatus": "حالة الحجز غير صالحة"
+  },
+  "payment": {
+    "initiated": "تم بدء الدفع",
+    "success": "تم الدفع بنجاح",
+    "failed": "فشل الدفع",
+    "refunded": "تم استرداد المبلغ",
+    "insufficientBalance": "رصيد المحفظة غير كافٍ",
+    "invalidGateway": "بوابة دفع غير صالحة"
+  },
+  "wallet": {
+    "credited": "تم إضافة المبلغ إلى المحفظة بنجاح",
+    "debited": "تم خصم المبلغ من المحفظة بنجاح",
+    "insufficientBalance": "الرصيد غير كافٍ",
+    "withdrawalSuccess": "تم السحب بنجاح",
+    "withdrawalFailed": "فشل السحب"
+  },
+  "notification": {
+    "deviceRegistered": "تم تسجيل الجهاز بنجاح",
+    "deviceUnregistered": "تم إلغاء تسجيل الجهاز بنجاح",
+    "bookingConfirmed": {
+      "title": "تم تأكيد الحجز",
+      "body": "تم تأكيد حجزك لـ {{fieldName}} في {{date}}"
+    },
+    "bookingReminder": {
+      "title": "تذكير بالحجز",
+      "body": "يبدأ حجزك في {{fieldName}} خلال ساعتين"
+    },
+    "bookingCancelled": {
+      "title": "تم إلغاء الحجز",
+      "body": "تم إلغاء حجزك لـ {{fieldName}} في {{date}}"
+    },
+    "newBooking": {
+      "title": "حجز جديد",
+      "body": "لديك حجز جديد لـ {{fieldName}} في {{date}}"
+    },
+    "noShow": {
+      "title": "تم تسجيل عدم الحضور",
+      "body": "تم تسجيلك كغير حاضر لحجزك في {{fieldName}}",
+      "warningOneMore": "عدم حضور واحد آخر سيؤدي إلى تعليق لمدة 30 يومًا.",
+      "suspended": "تم تعليق حسابك لمدة 30 يومًا بسبب عدم الحضور المتكرر."
+    },
+    "paymentSuccess": {
+      "title": "تم الدفع بنجاح",
+      "body": "تمت معالجة دفعتك لـ {{fieldName}} بنجاح"
+    },
+    "refundProcessed": {
+      "title": "تمت معالجة الاسترداد",
+      "body": "تم إضافة استرداد {{amount}} إلى محفظتك"
+    }
+  },
+  "review": {
+    "created": "تم إنشاء المراجعة بنجاح",
+    "updated": "تم تحديث المراجعة بنجاح",
+    "deleted": "تم حذف المراجعة بنجاح",
+    "retrieved": "تم استرجاع المراجعة بنجاح",
+    "listRetrieved": "تم استرجاع المراجعات بنجاح",
+    "replyAdded": "تم إضافة الرد بنجاح",
+    "notFound": "المراجعة غير موجودة",
+    "alreadyExists": "المراجعة موجودة بالفعل لهذا الحجز",
+    "bookingNotCompleted": "يمكن فقط مراجعة الحجوزات المكتملة",
+    "notOwner": "أنت لا تملك هذه المراجعة"
+  },
+  "errors": {
+    "BOOKING_NOT_FOUND": "الحجز غير موجود",
+    "BOOKING_NOT_COMPLETED": "يمكن فقط مراجعة الحجوزات المكتملة",
+    "REVIEW_ALREADY_EXISTS": "المراجعة موجودة بالفعل لهذا الحجز",
+    "REVIEW_NOT_FOUND": "المراجعة غير موجودة",
+    "FORBIDDEN": "ليس لديك إذن لتنفيذ هذا الإجراء"
+  }
+}

@@ -1,0 +1,54 @@
+# Railway ignore file - files/folders to exclude from deployment
+
+# Dependencies
+node_modules/
+
+# Testing
+coverage/
+.nyc_output/
+*.test.ts
+*.spec.ts
+test/
+tests/
+
+# Development
+.env
+.env.local
+.env.development
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentation (optional - remove if you want docs deployed)
+docs/
+*.md
+!README.md
+
+# SQL scripts (optional - remove if needed)
+sql/
+
+# Docker files (not needed when using Railway)
+docker-compose.yml
+docker-compose.*.yml
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Build artifacts (will be rebuilt)
+dist/
+build/
+
+# Uploads (use cloud storage instead)
+uploads/

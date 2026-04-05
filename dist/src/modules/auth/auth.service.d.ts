@@ -1,0 +1,44 @@
+import { JwtService } from '@nestjs/jwt';
+import { AppConfigService } from '@config/config.service';
+import { JwtPayload, RefreshTokenPayload } from './interfaces/jwt-payload.interface';
+import { TokenPair } from './interfaces/tokens.interface';
+import { UsersService } from '@modules/users/users.service';
+import { User } from '@prisma/client';
+import { PrismaService } from '@modules/prisma/prisma.service';
+import { RedisService } from '@modules/redis/redis.service';
+import { EmailService } from '@modules/email/email.service';
+export declare class AuthService {
+    private jwtService;
+    private configService;
+    private usersService;
+    private prisma;
+    private redisService;
+    private emailService;
+    private readonly logger;
+    constructor(jwtService: JwtService, configService: AppConfigService, usersService: UsersService, prisma: PrismaService, redisService: RedisService, emailService: EmailService);
+    generateAccessToken(payload: JwtPayload): string;
+    generateRefreshToken(userId: string, familyId?: string): string;
+    generateTokenPair(userId: string, email: string, role: 'PLAYER' | 'FIELD_OWNER' | 'ADMIN'): Promise<TokenPair>;
+    verifyAccessToken(token: string): Promise<JwtPayload>;
+    verifyRefreshToken(token: string): Promise<RefreshTokenPayload>;
+    decodeToken(token: string): any;
+    validateCredentials(email: string, password: string): Promise<User>;
+    refreshAccessToken(refreshToken: string): Promise<TokenPair>;
+    private revokeTokenFamily;
+    revokeRefreshToken(tokenId: string): Promise<void>;
+    cleanupExpiredTokens(): Promise<number>;
+    logout(accessToken: string, userId: string): Promise<void>;
+    isTokenBlacklisted(token: string): Promise<boolean>;
+    isUserBlacklisted(userId: string): Promise<boolean>;
+    generatePasswordResetToken(email: string): Promise<void>;
+    resetPassword(plainToken: string, newPassword: string): Promise<void>;
+    cleanupExpiredPasswordResetTokens(): Promise<number>;
+    handleOAuthUser(oauthId: string, email: string, provider: 'GOOGLE' | 'FACEBOOK'): Promise<{
+        user: User;
+        tokens: TokenPair;
+    }>;
+    generateEmailVerificationToken(userId: string, email: string): Promise<string | null>;
+    verifyEmail(plainToken: string): Promise<void>;
+    resendEmailVerification(email: string): Promise<void>;
+    cleanupExpiredAuthTokens(): Promise<void>;
+}

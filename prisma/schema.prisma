@@ -1,0 +1,575 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [postgis]
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum Role {
+  PLAYER
+  FIELD_OWNER
+  ADMIN
+}
+
+enum BookingStatus {
+  PENDING_PAYMENT
+  CONFIRMED
+  CHECKED_IN
+  COMPLETED
+  CANCELLED
+  CANCELLED_REFUNDED
+  CANCELLED_NO_REFUND
+  NO_SHOW
+  PAYMENT_FAILED
+  PLAYED
+  EXPIRED_NO_SHOW
+}
+
+enum SlotStatus {
+  AVAILABLE
+  BOOKED
+  BLOCKED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum PaymentVerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  EXPIRED
+  LOCKED
+}
+
+enum FieldStatus {
+  ACTIVE
+  INACTIVE
+  HIDDEN
+}
+
+enum PlatformTransactionType {
+  BOOKING_DEPOSIT     // player pays deposit → platform receives
+  BOOKING_REFUND      // cancellation → platform refunds player
+  ADMIN_WITHDRAWAL    // admin withdraws from platform
+  MANUAL_ADJUSTMENT   // manual correction
+}
+
+enum WalletTransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  REFUND
+  BOOKING_PAYMENT
+  COMMISSION_DEDUCTION
+  CREDIT
+  DEBIT
+  PAYOUT
+}
+
+enum WithdrawalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum OtpChannel {
+  SMS
+  EMAIL
+}
+
+enum PaymentGateway {
+  STRIPE
+  FAWRY
+  VODAFONE_CASH
+  INSTAPAY
+  WALLET
+  PAYMOB
+}
+
+// ============================================
+// MODELS
+// ============================================
+
+model User {
+  id                String    @id @default(uuid())
+  email             String    @unique
+  name              String?
+  passwordHash      String?
+  role              Role      @default(PLAYER)
+  isVerified        Boolean   @default(false)
+  emailVerifiedAt   DateTime?
+  preferredLanguage String    @default("en")
+  phoneNumber       String?
+  isSuspended       Boolean   @default(false)
+  suspendedUntil    DateTime?
+  noShowCount       Int       @default(0)
+  oauthId           String?
+  authProvider      String?
+  deletedAt         DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  wallet                    Wallet?
+  bookings                  Booking[]
+  fields                    Field[]
+  reviews                   Review[]
+  refreshTokens             RefreshToken[]
+  otpCodes                  OtpCode[]
+  fcmTokens                 FcmToken[]
+  passwordResetTokens       PasswordResetToken[]
+  emailVerificationTokens   EmailVerificationToken[]
+  withdrawalRequests        WithdrawalRequest[]
+
+  @@index([email])
+  @@index([role])
+}
+
+model Wallet {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  balance   Decimal  @default(0) @db.Decimal(10, 2)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions WalletTransaction[]
+
+  @@index([userId])
+}
+
+model WalletTransaction {
+  id            String                @id @default(uuid())
+  walletId      String
+  type          WalletTransactionType
+  amount        Decimal               @db.Decimal(10, 2)
+  balanceBefore Decimal               @db.Decimal(10, 2)
+  balanceAfter  Decimal               @db.Decimal(10, 2)
+  description   String?
+  reference     String?
+  metadata      Json?
+  createdAt     DateTime              @default(now())
+
+  wallet Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@index([walletId])
+  @@index([createdAt])
+}
+
+model RefreshToken {
+  id         String    @id @default(uuid())
+  userId     String
+  tokenId    String    @unique
+  familyId   String
+  isRevoked  Boolean   @default(false)
+  expiresAt  DateTime
+  createdAt  DateTime  @default(now())
+  revokedAt  DateTime?
+  replacedBy String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([tokenId])
+  @@index([familyId])
+  @@index([expiresAt])
+}
+
+model OtpCode {
+  id           String     @id @default(uuid())
+  userId       String
+  code         String
+  channel      OtpChannel
+  purpose      String
+  expiresAt    DateTime
+  verifiedAt   DateTime?
+  failureCount Int        @default(0)
+  lockedUntil  DateTime?
+  createdAt    DateTime   @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, purpose])
+}
+
+model FcmToken {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  deviceId  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+}
+
+model Field {
+  id              String                     @id @default(uuid())
+  ownerId         String
+  name            String
+  nameAr          String?
+  description     String?
+  descriptionAr   String?
+  location        Unsupported("geography")?
+  address         String
+  addressAr       String?
+  latitude        Float?
+  longitude       Float?
+  basePrice       Decimal?                   @db.Decimal(10, 2)
+  commissionRate  Decimal?                   @db.Decimal(5, 2)
+  averageRating   Float?
+  totalReviews    Int                        @default(0)
+  status          FieldStatus                @default(ACTIVE)
+  deletedAt       DateTime?
+  createdAt       DateTime                   @default(now())
+  updatedAt       DateTime                   @updatedAt
+
+  owner      User         @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  timeSlots  TimeSlot[]
+  bookings   Booking[]
+  reviews    Review[]
+  images     FieldImage[]
+
+  @@index([ownerId])
+}
+
+model TimeSlot {
+  id        String     @id @default(uuid())
+  fieldId   String
+  date      DateTime   @db.Date
+  startTime DateTime   @db.Time
+  endTime   DateTime   @db.Time
+  price     Decimal    @db.Decimal(10, 2)
+  status    SlotStatus @default(AVAILABLE)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  field    Field     @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+  bookings Booking[]
+
+  @@unique([fieldId, date, startTime])
+  @@index([fieldId])
+  @@index([date])
+  @@index([status])
+}
+
+model Booking {
+  id                   String        @id @default(uuid())
+  bookingNumber        String?       @unique
+  playerId             String
+  fieldId              String
+  timeSlotId           String
+  scheduledDate        DateTime      @db.Date
+  scheduledStartTime   DateTime      @db.Time
+  scheduledEndTime     DateTime      @db.Time
+  totalPrice           Decimal       @db.Decimal(10, 2)
+  depositAmount        Decimal       @db.Decimal(10, 2)
+  commissionAmount     Decimal       @db.Decimal(10, 2)
+  commissionRate       Decimal       @db.Decimal(5, 2)
+  ownerRevenue         Decimal       @db.Decimal(10, 2)
+  status               BookingStatus @default(PENDING_PAYMENT)
+  cancellationDeadline DateTime?
+  paymentDeadline      DateTime?
+  cancelledAt          DateTime?
+  cancelledBy          String?
+  refundAmount         Decimal?      @db.Decimal(10, 2)
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+
+  player               User                   @relation(fields: [playerId], references: [id])
+  field                Field                  @relation(fields: [fieldId], references: [id])
+  timeSlot             TimeSlot               @relation(fields: [timeSlotId], references: [id])
+  payment              Payment?
+  qrCode               QrCode?
+  review               Review?
+  bookingStatusHistory BookingStatusHistory[]
+
+  @@index([playerId])
+  @@index([fieldId])
+  @@index([timeSlotId])
+  @@index([status])
+  @@index([scheduledDate])
+}
+
+model Payment {
+  id                    String                      @id @default(uuid())
+  bookingId             String                      @unique
+  gateway               PaymentGateway
+  transactionId         String?
+  amount                Decimal                     @db.Decimal(10, 2)
+  currency              String                      @default("EGP")
+  status                PaymentStatus               @default(PENDING)
+  gatewayResponse       Json?
+  
+  // Manual payment verification fields
+  referenceCode         String?                     @unique
+  screenshotUrl         String?
+  verificationStatus    PaymentVerificationStatus   @default(PENDING)
+  verifiedBy            String?
+  verifiedAt            DateTime?
+  rejectionReason       String?
+  playerNotes           String?
+  
+  // User-provided transaction details
+  userTransactionId     String?
+  userSenderNumber      String?
+  
+  // Admin locking mechanism
+  verificationLockedBy  String?
+  verificationLockedAt  DateTime?
+  
+  // Upload tracking
+  uploadAttempts        Int                         @default(0)
+  lastUploadAt          DateTime?
+  
+  // Expiry tracking
+  paymentExpiresAt      DateTime?
+  
+  // Fraud detection flags
+  isFlagged             Boolean                     @default(false)
+  flagReason            String?
+  
+  createdAt             DateTime                    @default(now())
+  updatedAt             DateTime                    @updatedAt
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([bookingId])
+  @@index([transactionId])
+  @@index([status])
+  @@index([verificationStatus])
+  @@index([referenceCode])
+  @@index([verificationLockedBy])
+  @@index([isFlagged])
+}
+
+model QrCode {
+  id        String    @id @default(uuid())
+  bookingId String    @unique
+  qrToken   String    @unique
+  imageUrl  String
+  isUsed    Boolean   @default(false)
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  booking Booking @relation(fields: [bookingId], references: [id])
+
+  @@index([qrToken])
+}
+
+model Review {
+  id         String    @id @default(uuid())
+  bookingId  String    @unique
+  playerId   String
+  fieldId    String
+  rating     Int
+  comment    String?
+  commentAr  String?
+  reply      String?
+  replyAr    String?
+  ownerReply String?
+  repliedAt  DateTime?
+  deletedAt  DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  player  User    @relation(fields: [playerId], references: [id])
+  field   Field   @relation(fields: [fieldId], references: [id])
+
+  @@index([playerId])
+  @@index([fieldId])
+  @@index([rating])
+}
+
+model AppSetting {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String
+  dataType  String   @default("string")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([key])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  isUsed    Boolean  @default(false)
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+}
+
+model EmailVerificationToken {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  isUsed    Boolean  @default(false)
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+}
+
+model BookingStatusHistory {
+  id         String        @id @default(uuid())
+  bookingId  String
+  fromStatus BookingStatus?
+  toStatus   BookingStatus
+  reason     String?
+  createdAt  DateTime      @default(now())
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([bookingId])
+}
+
+model Revenue {
+  id               String         @id @default(uuid())
+  bookingId        String         @unique
+  fieldId          String
+  fieldOwnerId     String
+  gateway          PaymentGateway
+  amount           Decimal        @db.Decimal(10, 2)
+  commissionAmount Decimal        @db.Decimal(10, 2)
+  ownerRevenue     Decimal        @db.Decimal(10, 2)
+  createdAt        DateTime       @default(now())
+
+  @@index([fieldId])
+  @@index([fieldOwnerId])
+  @@index([gateway])
+  @@index([createdAt])
+}
+
+model FieldImage {
+  id        String   @id @default(uuid())
+  fieldId   String
+  url       String
+  isPrimary Boolean  @default(false)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  field Field @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+
+  @@index([fieldId])
+}
+
+model PlatformWallet {
+  id        String   @id @default(uuid())
+  balance   Decimal  @default(0) @db.Decimal(10, 2)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  transactions PlatformWalletTransaction[]
+}
+
+model PlatformWalletTransaction {
+  id              String                  @id @default(uuid())
+  platformWalletId String
+  type            PlatformTransactionType
+  amount          Decimal                 @db.Decimal(10, 2)
+  balanceBefore   Decimal                 @db.Decimal(10, 2)
+  balanceAfter    Decimal                 @db.Decimal(10, 2)
+  bookingId       String?
+  reference       String?
+  description     String?
+  payoutMethod    String?
+  payoutDetails   Json?
+  createdAt       DateTime                @default(now())
+
+  platformWallet PlatformWallet @relation(fields: [platformWalletId], references: [id])
+
+  @@index([platformWalletId])
+  @@index([bookingId])
+  @@index([createdAt])
+}
+
+model WithdrawalRequest {
+  id             String           @id @default(uuid())
+  ownerId        String
+  amount         Decimal          @db.Decimal(10, 2)
+  status         WithdrawalStatus @default(PENDING)
+  paymentMethod  String
+  accountDetails String
+  adminNote      String?
+  processedBy    String?
+  processedAt    DateTime?
+  transactionRef String?
+  walletTxId     String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  owner User @relation(fields: [ownerId], references: [id])
+
+  @@index([ownerId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model PaymentAccountSettings {
+  id            String   @id @default(uuid())
+  paymentMethod String   @unique // 'VODAFONE_CASH' or 'INSTAPAY'
+  accountNumber String?  // Vodafone Cash number
+  accountName   String?  // InstaPay account name
+  mobileNumber  String?  // InstaPay mobile number
+  ipn           String?  // InstaPay Payment Address
+  bankAccount   String?  // Optional bank account
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([paymentMethod])
+  @@index([isActive])
+}
+
+model PaymentVerificationAuditLog {
+  id              String   @id @default(uuid())
+  paymentId       String
+  adminId         String
+  action          String   // 'APPROVED', 'REJECTED', 'LOCKED', 'UNLOCKED', 'FLAGGED'
+  previousStatus  String?
+  newStatus       String?
+  reason          String?
+  metadata        Json?
+  ipAddress       String?
+  userAgent       String?
+  createdAt       DateTime @default(now())
+
+  @@index([paymentId])
+  @@index([adminId])
+  @@index([action])
+  @@index([createdAt])
+}

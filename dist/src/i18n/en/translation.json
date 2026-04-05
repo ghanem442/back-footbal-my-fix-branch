@@ -1,0 +1,188 @@
+{
+  "common": {
+    "success": "Operation successful",
+    "error": "An error occurred",
+    "notFound": "Resource not found",
+    "unauthorized": "Unauthorized access",
+    "forbidden": "Access forbidden",
+    "badRequest": "Invalid request",
+    "internalError": "Internal server error",
+    "conflict": "Resource conflict",
+    "tooManyRequests": "Too many requests, please try again later",
+    "duplicateEntry": "This record already exists",
+    "invalidReference": "Invalid reference to related resource",
+    "missingRelation": "Required related resource is missing"
+  },
+  "auth": {
+    "loginSuccess": "Login successful",
+    "logoutSuccess": "Logout successful",
+    "registrationSuccess": "Registration successful",
+    "invalidCredentials": "Invalid email or password",
+    "emailAlreadyExists": "Email already exists",
+    "passwordResetSent": "Password reset link sent to your email",
+    "passwordResetSuccess": "Password reset successful",
+    "tokenExpired": "Token has expired",
+    "tokenInvalid": "Invalid token",
+    "accountNotVerified": "Account not verified",
+    "accountSuspended": "Account is suspended",
+    "invalidResetToken": "Invalid or expired reset token"
+  },
+  "validation": {
+    "emailInvalid": "Invalid email format",
+    "passwordTooShort": "Password must be at least 8 characters",
+    "passwordTooWeak": "Password must contain uppercase, lowercase, and number",
+    "required": "{{field}} is required",
+    "minLength": "{{field}} must be at least {{min}} characters",
+    "maxLength": "{{field}} must not exceed {{max}} characters",
+    "isEmail": "{{field}} must be a valid email",
+    "isString": "{{field}} must be a string",
+    "isNumber": "{{field}} must be a number",
+    "isBoolean": "{{field}} must be a boolean",
+    "isEnum": "{{field}} must be one of: {{values}}",
+    "min": "{{field}} must be at least {{min}}",
+    "max": "{{field}} must not exceed {{max}}",
+    "isLatitude": "{{field}} must be a valid latitude (-90 to 90)",
+    "isLongitude": "{{field}} must be a valid longitude (-180 to 180)",
+    "isPhoneNumber": "{{field}} must be a valid phone number",
+    "isUrl": "{{field}} must be a valid URL",
+    "isDate": "{{field}} must be a valid date",
+    "isArray": "{{field}} must be an array",
+    "arrayMinSize": "{{field}} must contain at least {{min}} items",
+    "arrayMaxSize": "{{field}} must not contain more than {{max}} items"
+  },
+  "otp": {
+    "sent": "OTP sent successfully",
+    "verified": "OTP verified successfully",
+    "invalid": "Invalid OTP code",
+    "expired": "OTP has expired",
+    "locked": "Too many failed attempts. Please try again later",
+    "cooldown": "Please wait before requesting another OTP",
+    "alreadyVerified": "Account is already verified"
+  },
+  "user": {
+    "profileUpdated": "Profile updated successfully",
+    "roleChanged": "User role changed successfully",
+    "notFound": "User not found",
+    "suspended": "User account is suspended",
+    "cannotChangeOwnRole": "Cannot change your own role"
+  },
+  "field": {
+    "created": "Field created successfully",
+    "updated": "Field updated successfully",
+    "deleted": "Field deleted successfully",
+    "retrieved": "Field retrieved successfully",
+    "listRetrieved": "Fields retrieved successfully",
+    "searchCompleted": "Field search completed successfully",
+    "notFound": "Field not found",
+    "notOwner": "You do not own this field",
+    "invalidCoordinates": "Invalid geographic coordinates",
+    "updateFailed": "Failed to update field",
+    "imageUploaded": "Image uploaded successfully",
+    "imageDeleted": "Image deleted successfully",
+    "invalidFileType": "Invalid file type. Only JPEG, PNG, and WebP are allowed",
+    "fileTooLarge": "File size exceeds 5MB limit",
+    "maxImagesReached": "Maximum of 10 images per field reached",
+    "imageNotFound": "Image not found",
+    "noFileProvided": "No file provided"
+  },
+  "timeSlot": {
+    "created": "Time slot created successfully",
+    "updated": "Time slot updated successfully",
+    "deleted": "Time slot deleted successfully",
+    "retrieved": "Time slot retrieved successfully",
+    "listRetrieved": "Time slots retrieved successfully",
+    "bulkCreated": "Time slots created successfully in bulk",
+    "notFound": "Time slot not found",
+    "startTimeBeforeEndTime": "Start time must be before end time",
+    "overlappingSlot": "Time slot overlaps with an existing slot on the same field and date",
+    "overlappingSlotDetails": "Time slot overlaps with an existing slot on {{date}} from {{startTime}} to {{endTime}}",
+    "alreadyBooked": "Time slot is already booked",
+    "notAvailable": "Time slot is not available",
+    "cannotModifyBooked": "Cannot modify or delete a booked time slot",
+    "invalidDateRange": "Start date must be before or equal to end date",
+    "invalidDaysOfWeek": "Days of week must be between 0 (Sunday) and 6 (Saturday)",
+    "noDatesGenerated": "No dates match the specified days of week in the given date range"
+  },
+  "booking": {
+    "created": "Booking created successfully",
+    "confirmed": "Booking confirmed",
+    "cancelled": "Booking cancelled",
+    "checkedIn": "Booking checked in",
+    "completed": "Booking completed",
+    "notFound": "Booking not found",
+    "alreadyBooked": "Time slot is already booked",
+    "paymentPending": "Payment is pending",
+    "paymentFailed": "Payment failed",
+    "cannotCancel": "Cannot cancel this booking",
+    "paymentDeadlineExpired": "Payment deadline has expired",
+    "invalidStatus": "Invalid booking status"
+  },
+  "payment": {
+    "initiated": "Payment initiated",
+    "success": "Payment successful",
+    "failed": "Payment failed",
+    "refunded": "Payment refunded",
+    "insufficientBalance": "Insufficient wallet balance",
+    "invalidGateway": "Invalid payment gateway"
+  },
+  "wallet": {
+    "credited": "Wallet credited successfully",
+    "debited": "Wallet debited successfully",
+    "insufficientBalance": "Insufficient balance",
+    "withdrawalSuccess": "Withdrawal successful",
+    "withdrawalFailed": "Withdrawal failed"
+  },
+  "notification": {
+    "deviceRegistered": "Device registered successfully",
+    "deviceUnregistered": "Device unregistered successfully",
+    "bookingConfirmed": {
+      "title": "Booking Confirmed",
+      "body": "Your booking for {{fieldName}} on {{date}} has been confirmed"
+    },
+    "bookingReminder": {
+      "title": "Booking Reminder",
+      "body": "Your booking at {{fieldName}} starts in 2 hours"
+    },
+    "bookingCancelled": {
+      "title": "Booking Cancelled",
+      "body": "Your booking for {{fieldName}} on {{date}} has been cancelled"
+    },
+    "newBooking": {
+      "title": "New Booking",
+      "body": "You have a new booking for {{fieldName}} on {{date}}"
+    },
+    "noShow": {
+      "title": "No-Show Recorded",
+      "body": "You were marked as no-show for your booking at {{fieldName}}",
+      "warningOneMore": "One more no-show will result in a 30-day suspension.",
+      "suspended": "Your account has been suspended for 30 days due to repeated no-shows."
+    },
+    "paymentSuccess": {
+      "title": "Payment Successful",
+      "body": "Your payment for {{fieldName}} has been processed successfully"
+    },
+    "refundProcessed": {
+      "title": "Refund Processed",
+      "body": "Your refund of {{amount}} has been credited to your wallet"
+    }
+  },
+  "review": {
+    "created": "Review created successfully",
+    "updated": "Review updated successfully",
+    "deleted": "Review deleted successfully",
+    "retrieved": "Review retrieved successfully",
+    "listRetrieved": "Reviews retrieved successfully",
+    "replyAdded": "Reply added successfully",
+    "notFound": "Review not found",
+    "alreadyExists": "Review already exists for this booking",
+    "bookingNotCompleted": "Can only review completed bookings",
+    "notOwner": "You do not own this review"
+  },
+  "errors": {
+    "BOOKING_NOT_FOUND": "Booking not found",
+    "BOOKING_NOT_COMPLETED": "Can only review completed bookings",
+    "REVIEW_ALREADY_EXISTS": "Review already exists for this booking",
+    "REVIEW_NOT_FOUND": "Review not found",
+    "FORBIDDEN": "You do not have permission to perform this action"
+  }
+}

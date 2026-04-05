@@ -1,0 +1,1 @@
+{"version":3,"file":"verify-booking-id.dto.js","sourceRoot":"","sources":["../../../../../src/modules/qr/dto/verify-booking-id.dto.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,qDAAuD;AACvD,6CAA8C;AAE9C,MAAa,kBAAkB;CAQ9B;AARD,gDAQC;AADC;IANC,IAAA,qBAAW,EAAC;QACX,WAAW,EAAE,sBAAsB;QACnC,OAAO,EAAE,eAAe;KACzB,CAAC;IACD,IAAA,4BAAU,GAAE;IACZ,IAAA,0BAAQ,GAAE;;qDACQ"}
