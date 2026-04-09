@@ -31,6 +31,8 @@ import { RegisterDto } from '@modules/users/dto/register.dto';
 import { LoginDto } from '@modules/users/dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ForgotPasswordOtpDto } from './dto/forgot-password-otp.dto';
+import { VerifyOtpResetPasswordDto } from './dto/verify-otp-reset-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { ResendVerificationDto } from './dto/resend-verification.dto';
@@ -1154,4 +1156,45 @@ export class AuthController {
       message: { en: 'Password changed successfully. Please login again.', ar: 'تم تغيير كلمة المرور بنجاح. يرجى تسجيل الدخول مجدداً.' },
     };
   }
+
+  @Post('forgot-password-otp')
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(RateLimitGuard)
+  @RateLimit({ ttl: 900000, limit: 3 })
+  @ApiOperation({ summary: 'Request password reset OTP' })
+  @ApiBody({ type: ForgotPasswordOtpDto })
+  async forgotPasswordOtp(
+    @Body(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+    dto: ForgotPasswordOtpDto,
+  ) {
+    await this.authService.sendPasswordResetOtp(dto.email);
+    return {
+      success: true,
+      message: {
+        en: 'If an account exists with this email, you will receive an OTP shortly',
+        ar: 'إذا كان هناك حساب بهذا البريد الإلكتروني، ستتلقى رمز التحقق قريباً',
+      },
+    };
+  }
+
+  @Post('verify-otp-reset-password')
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Verify OTP and reset password' })
+  @ApiBody({ type: VerifyOtpResetPasswordDto })
+  async verifyOtpResetPassword(
+    @Body(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+    dto: VerifyOtpResetPasswordDto,
+  ) {
+    await this.authService.verifyOtpAndResetPassword(dto.email, dto.otp, dto.newPassword);
+    return {
+      success: true,
+      message: {
+        en: 'Password reset successful. You can now login with your new password',
+        ar: 'تم إعادة تعيين كلمة المرور بنجاح. يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة',
+      },
+    };
+  }
 }
+

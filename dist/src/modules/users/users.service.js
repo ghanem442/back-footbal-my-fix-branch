@@ -184,6 +184,14 @@ let UsersService = UsersService_1 = class UsersService {
             throw error;
         }
     }
+    async updatePassword(userId, newPassword) {
+        const bcrypt = require('bcrypt');
+        const passwordHash = await bcrypt.hash(newPassword, 12);
+        await this.prisma.user.update({
+            where: { id: userId },
+            data: { passwordHash },
+        });
+    }
 };
 exports.UsersService = UsersService;
 exports.UsersService = UsersService = UsersService_1 = __decorate([

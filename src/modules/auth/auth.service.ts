@@ -9,6 +9,7 @@ import { User } from '@prisma/client';
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { RedisService } from '@modules/redis/redis.service';
 import { EmailService } from '@modules/email/email.service';
+import { OtpService } from '@modules/otp/otp.service';
 import { TokenHasher } from './utils/token-hasher.util';
 import { Cron, CronExpression } from '@nestjs/schedule';
 
@@ -23,6 +24,7 @@ export class AuthService {
     private prisma: PrismaService,
     private redisService: RedisService,
     private emailService: EmailService,
+    private otpService: OtpService,
   ) {}
 
   /**
@@ -733,5 +735,35 @@ export class AuthService {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       this.logger.error(`Token cleanup failed: ${errorMessage}`);
     }
+  }
+
+  async sendPasswordResetOtp(email: string): Promise<void> {
+    const user = await this.usersService.findByEmail(email);
+    if (!user) {
+      this.logger.warn(`Password reset OTP requested for non-existent email: ${email}`);
+      return;
+    }
+    await this.otpService.createAndSendOtp(user.id, 'EMAIL', email, 'PASSWORD_RESET');
+    this.logger.log(`Password reset OTP sent to ${email}`);
+  }
+
+  async verifyOtpAndResetPassword(email: string, otp: string, newPassword: string): Promise<void> {
+    const user = await this.usersService.findByEmail(email);
+    if (!user) {
+      throw new UnauthorizedException({
+        code: 'INVALID_CREDENTIALS',
+        message: { en: 'Invalid email or OTP', ar: 'البريد الإلكتروني أو رمز التحقق غير صحيح' },
+      });
+    }
+    await this.otpService.verifyOtp(user.id, otp, 'PASSWORD_RESET');
+    await this.usersService.updatePassword(user.id, newPassword);
+    
+    // Revoke all refresh tokens for security
+    await this.prisma.refreshToken.updateMany({
+      where: { userId: user.id, isRevoked: false },
+      data: { isRevoked: true, revokedAt: new Date() },
+    });
+    
+    this.logger.log(`Password reset successful for user: ${email}`);
   }
 }

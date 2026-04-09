@@ -7,6 +7,7 @@ import { User } from '@prisma/client';
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { RedisService } from '@modules/redis/redis.service';
 import { EmailService } from '@modules/email/email.service';
+import { OtpService } from '@modules/otp/otp.service';
 export declare class AuthService {
     private jwtService;
     private configService;
@@ -14,8 +15,9 @@ export declare class AuthService {
     private prisma;
     private redisService;
     private emailService;
+    private otpService;
     private readonly logger;
-    constructor(jwtService: JwtService, configService: AppConfigService, usersService: UsersService, prisma: PrismaService, redisService: RedisService, emailService: EmailService);
+    constructor(jwtService: JwtService, configService: AppConfigService, usersService: UsersService, prisma: PrismaService, redisService: RedisService, emailService: EmailService, otpService: OtpService);
     generateAccessToken(payload: JwtPayload): string;
     generateRefreshToken(userId: string, familyId?: string): string;
     generateTokenPair(userId: string, email: string, role: 'PLAYER' | 'FIELD_OWNER' | 'ADMIN'): Promise<TokenPair>;
@@ -41,4 +43,6 @@ export declare class AuthService {
     verifyEmail(plainToken: string): Promise<void>;
     resendEmailVerification(email: string): Promise<void>;
     cleanupExpiredAuthTokens(): Promise<void>;
+    sendPasswordResetOtp(email: string): Promise<void>;
+    verifyOtpAndResetPassword(email: string, otp: string, newPassword: string): Promise<void>;
 }

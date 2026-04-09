@@ -34,6 +34,7 @@ export declare class BookingConfirmationService {
             id: string;
             createdAt: Date;
             updatedAt: Date;
+            verifiedAt: Date | null;
             status: import(".prisma/client").$Enums.PaymentStatus;
             bookingId: string;
             amount: Prisma.Decimal;
@@ -45,7 +46,6 @@ export declare class BookingConfirmationService {
             screenshotUrl: string | null;
             verificationStatus: import(".prisma/client").$Enums.PaymentVerificationStatus;
             verifiedBy: string | null;
-            verifiedAt: Date | null;
             rejectionReason: string | null;
             playerNotes: string | null;
             userTransactionId: string | null;
@@ -106,6 +106,7 @@ export declare class BookingConfirmationService {
             id: string;
             createdAt: Date;
             updatedAt: Date;
+            verifiedAt: Date | null;
             status: import(".prisma/client").$Enums.PaymentStatus;
             bookingId: string;
             amount: Prisma.Decimal;
@@ -117,7 +118,6 @@ export declare class BookingConfirmationService {
             screenshotUrl: string | null;
             verificationStatus: import(".prisma/client").$Enums.PaymentVerificationStatus;
             verifiedBy: string | null;
-            verifiedAt: Date | null;
             rejectionReason: string | null;
             playerNotes: string | null;
             userTransactionId: string | null;

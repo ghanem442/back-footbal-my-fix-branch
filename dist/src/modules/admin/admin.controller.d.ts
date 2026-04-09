@@ -220,8 +220,8 @@ export declare class AdminController {
             users: {
                 id: string;
                 createdAt: Date;
-                email: string;
                 name: string | null;
+                email: string;
                 role: import(".prisma/client").$Enums.Role;
                 isVerified: boolean;
                 phoneNumber: string | null;
@@ -359,28 +359,28 @@ export declare class AdminController {
         data: {
             owner: {
                 id: string;
-                email: string;
                 name: string | null;
+                email: string;
             };
         } & {
             id: string;
-            status: import(".prisma/client").$Enums.FieldStatus;
             createdAt: Date;
             updatedAt: Date;
             name: string;
             deletedAt: Date | null;
-            ownerId: string;
-            nameAr: string | null;
             description: string | null;
-            descriptionAr: string | null;
             address: string;
-            addressAr: string | null;
             latitude: number | null;
             longitude: number | null;
             basePrice: import("@prisma/client/runtime/library").Decimal | null;
             commissionRate: import("@prisma/client/runtime/library").Decimal | null;
+            ownerId: string;
+            nameAr: string | null;
+            descriptionAr: string | null;
+            addressAr: string | null;
             averageRating: number | null;
             totalReviews: number;
+            status: import(".prisma/client").$Enums.FieldStatus;
         };
         message: {
             en: string;
@@ -392,28 +392,28 @@ export declare class AdminController {
         data: {
             owner: {
                 id: string;
-                email: string;
                 name: string | null;
+                email: string;
             };
         } & {
             id: string;
-            status: import(".prisma/client").$Enums.FieldStatus;
             createdAt: Date;
             updatedAt: Date;
             name: string;
             deletedAt: Date | null;
-            ownerId: string;
-            nameAr: string | null;
             description: string | null;
-            descriptionAr: string | null;
             address: string;
-            addressAr: string | null;
             latitude: number | null;
             longitude: number | null;
             basePrice: import("@prisma/client/runtime/library").Decimal | null;
             commissionRate: import("@prisma/client/runtime/library").Decimal | null;
+            ownerId: string;
+            nameAr: string | null;
+            descriptionAr: string | null;
+            addressAr: string | null;
             averageRating: number | null;
             totalReviews: number;
+            status: import(".prisma/client").$Enums.FieldStatus;
         };
         message: {
             en: string;
@@ -435,9 +435,9 @@ export declare class AdminController {
         success: boolean;
         data: {
             id: string;
-            status: import(".prisma/client").$Enums.FieldStatus;
             updatedAt: Date;
             name: string;
+            status: import(".prisma/client").$Enums.FieldStatus;
         };
         message: {
             en: string;
@@ -718,8 +718,8 @@ export declare class AdminController {
                 createdAt: Date;
                 player: {
                     id: string;
-                    email: string;
                     name: string | null;
+                    email: string;
                     phoneNumber: string | null;
                 };
                 booking: {
@@ -775,20 +775,39 @@ export declare class AdminController {
                 verifiedAt: Date;
             };
             booking: {
+                field: {
+                    id: string;
+                    name: string;
+                    address: string;
+                    ownerId: string;
+                };
+                timeSlot: {
+                    id: string;
+                    createdAt: Date;
+                    updatedAt: Date;
+                    date: Date;
+                    status: import(".prisma/client").$Enums.SlotStatus;
+                    fieldId: string;
+                    startTime: Date;
+                    endTime: Date;
+                    price: import("@prisma/client/runtime/library").Decimal;
+                };
                 payment: {
                     id: string;
+                    createdAt: Date;
+                    updatedAt: Date;
+                    verifiedAt: Date | null;
+                    status: import(".prisma/client").$Enums.PaymentStatus;
                     bookingId: string;
+                    amount: import("@prisma/client/runtime/library").Decimal;
                     gateway: import(".prisma/client").$Enums.PaymentGateway;
                     transactionId: string | null;
-                    amount: import("@prisma/client/runtime/library").Decimal;
                     currency: string;
-                    status: import(".prisma/client").$Enums.PaymentStatus;
                     gatewayResponse: import("@prisma/client/runtime/library").JsonValue | null;
                     referenceCode: string | null;
                     screenshotUrl: string | null;
                     verificationStatus: import(".prisma/client").$Enums.PaymentVerificationStatus;
                     verifiedBy: string | null;
-                    verifiedAt: Date | null;
                     rejectionReason: string | null;
                     playerNotes: string | null;
                     userTransactionId: string | null;
@@ -800,39 +819,20 @@ export declare class AdminController {
                     paymentExpiresAt: Date | null;
                     isFlagged: boolean;
                     flagReason: string | null;
-                    createdAt: Date;
-                    updatedAt: Date;
                 } | null;
-                field: {
-                    id: string;
-                    name: string;
-                    ownerId: string;
-                    address: string;
-                };
                 player: {
                     id: string;
                     email: string;
                 };
-                timeSlot: {
-                    id: string;
-                    status: import(".prisma/client").$Enums.SlotStatus;
-                    createdAt: Date;
-                    updatedAt: Date;
-                    fieldId: string;
-                    date: Date;
-                    startTime: Date;
-                    endTime: Date;
-                    price: import("@prisma/client/runtime/library").Decimal;
-                };
             } & {
                 id: string;
-                status: import(".prisma/client").$Enums.BookingStatus;
                 createdAt: Date;
                 updatedAt: Date;
                 commissionRate: import("@prisma/client/runtime/library").Decimal;
+                status: import(".prisma/client").$Enums.BookingStatus;
+                fieldId: string;
                 bookingNumber: string | null;
                 playerId: string;
-                fieldId: string;
                 timeSlotId: string;
                 scheduledDate: Date;
                 scheduledStartTime: Date;
@@ -899,19 +899,19 @@ export declare class AdminController {
                     };
                     player: {
                         id: string;
-                        email: string;
                         name: string | null;
+                        email: string;
                         phoneNumber: string | null;
                     };
                 } & {
                     id: string;
-                    status: import(".prisma/client").$Enums.BookingStatus;
                     createdAt: Date;
                     updatedAt: Date;
                     commissionRate: import("@prisma/client/runtime/library").Decimal;
+                    status: import(".prisma/client").$Enums.BookingStatus;
+                    fieldId: string;
                     bookingNumber: string | null;
                     playerId: string;
-                    fieldId: string;
                     timeSlotId: string;
                     scheduledDate: Date;
                     scheduledStartTime: Date;
@@ -928,18 +928,20 @@ export declare class AdminController {
                 };
             } & {
                 id: string;
+                createdAt: Date;
+                updatedAt: Date;
+                verifiedAt: Date | null;
+                status: import(".prisma/client").$Enums.PaymentStatus;
                 bookingId: string;
+                amount: import("@prisma/client/runtime/library").Decimal;
                 gateway: import(".prisma/client").$Enums.PaymentGateway;
                 transactionId: string | null;
-                amount: import("@prisma/client/runtime/library").Decimal;
                 currency: string;
-                status: import(".prisma/client").$Enums.PaymentStatus;
                 gatewayResponse: import("@prisma/client/runtime/library").JsonValue | null;
                 referenceCode: string | null;
                 screenshotUrl: string | null;
                 verificationStatus: import(".prisma/client").$Enums.PaymentVerificationStatus;
                 verifiedBy: string | null;
-                verifiedAt: Date | null;
                 rejectionReason: string | null;
                 playerNotes: string | null;
                 userTransactionId: string | null;
@@ -951,8 +953,6 @@ export declare class AdminController {
                 paymentExpiresAt: Date | null;
                 isFlagged: boolean;
                 flagReason: string | null;
-                createdAt: Date;
-                updatedAt: Date;
             })[];
             pagination: {
                 page: number;
@@ -972,18 +972,20 @@ export declare class AdminController {
         success: boolean;
         data: {
             id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            verifiedAt: Date | null;
+            status: import(".prisma/client").$Enums.PaymentStatus;
             bookingId: string;
+            amount: import("@prisma/client/runtime/library").Decimal;
             gateway: import(".prisma/client").$Enums.PaymentGateway;
             transactionId: string | null;
-            amount: import("@prisma/client/runtime/library").Decimal;
             currency: string;
-            status: import(".prisma/client").$Enums.PaymentStatus;
             gatewayResponse: import("@prisma/client/runtime/library").JsonValue | null;
             referenceCode: string | null;
             screenshotUrl: string | null;
             verificationStatus: import(".prisma/client").$Enums.PaymentVerificationStatus;
             verifiedBy: string | null;
-            verifiedAt: Date | null;
             rejectionReason: string | null;
             playerNotes: string | null;
             userTransactionId: string | null;
@@ -995,8 +997,6 @@ export declare class AdminController {
             paymentExpiresAt: Date | null;
             isFlagged: boolean;
             flagReason: string | null;
-            createdAt: Date;
-            updatedAt: Date;
         };
         message: {
             en: string;
@@ -1007,18 +1007,20 @@ export declare class AdminController {
         success: boolean;
         data: {
             id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            verifiedAt: Date | null;
+            status: import(".prisma/client").$Enums.PaymentStatus;
             bookingId: string;
+            amount: import("@prisma/client/runtime/library").Decimal;
             gateway: import(".prisma/client").$Enums.PaymentGateway;
             transactionId: string | null;
-            amount: import("@prisma/client/runtime/library").Decimal;
             currency: string;
-            status: import(".prisma/client").$Enums.PaymentStatus;
             gatewayResponse: import("@prisma/client/runtime/library").JsonValue | null;
             referenceCode: string | null;
             screenshotUrl: string | null;
             verificationStatus: import(".prisma/client").$Enums.PaymentVerificationStatus;
             verifiedBy: string | null;
-            verifiedAt: Date | null;
             rejectionReason: string | null;
             playerNotes: string | null;
             userTransactionId: string | null;
@@ -1030,8 +1032,6 @@ export declare class AdminController {
             paymentExpiresAt: Date | null;
             isFlagged: boolean;
             flagReason: string | null;
-            createdAt: Date;
-            updatedAt: Date;
         };
         message: {
             en: string;
@@ -1043,8 +1043,8 @@ export declare class AdminController {
         data: {
             id: string;
             createdAt: Date;
-            metadata: import("@prisma/client/runtime/library").JsonValue | null;
             reason: string | null;
+            metadata: import("@prisma/client/runtime/library").JsonValue | null;
             paymentId: string;
             adminId: string;
             action: string;
@@ -1064,8 +1064,8 @@ export declare class AdminController {
             logs: {
                 id: string;
                 createdAt: Date;
-                metadata: import("@prisma/client/runtime/library").JsonValue | null;
                 reason: string | null;
+                metadata: import("@prisma/client/runtime/library").JsonValue | null;
                 paymentId: string;
                 adminId: string;
                 action: string;

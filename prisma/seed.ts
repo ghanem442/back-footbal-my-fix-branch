@@ -69,6 +69,7 @@ async function main() {
   console.log('Creating test users...');
 
   const hashedPassword = await bcrypt.hash('Test@123', 12);
+  const myHashedPassword = await bcrypt.hash('ZXzx@442004', 12);
 
   const player = await prisma.user.upsert({
     where: { email: 'player@test.com' },
@@ -87,11 +88,11 @@ async function main() {
   });
 
   const fieldOwner = await prisma.user.upsert({
-    where: { email: 'owner@test.com' },
+    where: { email: 'owner@footballbooking.com' },
     update: {},
     create: {
-      email: 'owner@test.com',
-      passwordHash: hashedPassword,
+      email: 'owner@footballbooking.com',
+      passwordHash: myHashedPassword,
       role: 'FIELD_OWNER',
       isVerified: true,
       wallet: {
@@ -103,11 +104,11 @@ async function main() {
   });
 
   const admin = await prisma.user.upsert({
-    where: { email: 'admin@test.com' },
+    where: { email: 'admin@footballbooking.com' },
     update: {},
     create: {
-      email: 'admin@test.com',
-      passwordHash: hashedPassword,
+      email: 'admin@footballbooking.com',
+      passwordHash: myHashedPassword,
       role: 'ADMIN',
       isVerified: true,
       wallet: {
@@ -119,7 +120,6 @@ async function main() {
   });
 
   // Create your personal account
-  const myHashedPassword = await bcrypt.hash('ZXzx@442004', 12);
   const myAccount = await prisma.user.upsert({
     where: { email: 'my01281105973@gmail.com' },
     update: {},
@@ -138,8 +138,8 @@ async function main() {
 
   console.log('Test users created successfully');
   console.log('- Player: player@test.com / Test@123');
-  console.log('- Field Owner: owner@test.com / Test@123');
-  console.log('- Admin: admin@test.com / Test@123');
+  console.log('- Field Owner: owner@footballbooking.com / ZXzx@442004');
+  console.log('- Admin: admin@footballbooking.com / ZXzx@442004');
   console.log('- Your Account: my01281105973@gmail.com / ZXzx@442004');
 
   // Create test fields
@@ -212,7 +212,7 @@ async function main() {
   );
 
   console.log('Test fields created successfully');
-  console.log('- 3 fields created for owner@test.com');
+  console.log('- 3 fields created for owner@footballbooking.com');
 
   console.log('Database seeding completed successfully!');
 }

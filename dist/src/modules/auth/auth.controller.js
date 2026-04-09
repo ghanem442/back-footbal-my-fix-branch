@@ -22,6 +22,8 @@ const register_dto_1 = require("../users/dto/register.dto");
 const login_dto_1 = require("../users/dto/login.dto");
 const refresh_token_dto_1 = require("./dto/refresh-token.dto");
 const forgot_password_dto_1 = require("./dto/forgot-password.dto");
+const forgot_password_otp_dto_1 = require("./dto/forgot-password-otp.dto");
+const verify_otp_reset_password_dto_1 = require("./dto/verify-otp-reset-password.dto");
 const reset_password_dto_1 = require("./dto/reset-password.dto");
 const verify_email_dto_1 = require("./dto/verify-email.dto");
 const resend_verification_dto_1 = require("./dto/resend-verification.dto");
@@ -521,6 +523,26 @@ let AuthController = class AuthController {
             message: { en: 'Password changed successfully. Please login again.', ar: 'تم تغيير كلمة المرور بنجاح. يرجى تسجيل الدخول مجدداً.' },
         };
     }
+    async forgotPasswordOtp(dto) {
+        await this.authService.sendPasswordResetOtp(dto.email);
+        return {
+            success: true,
+            message: {
+                en: 'If an account exists with this email, you will receive an OTP shortly',
+                ar: 'إذا كان هناك حساب بهذا البريد الإلكتروني، ستتلقى رمز التحقق قريباً',
+            },
+        };
+    }
+    async verifyOtpResetPassword(dto) {
+        await this.authService.verifyOtpAndResetPassword(dto.email, dto.otp, dto.newPassword);
+        return {
+            success: true,
+            message: {
+                en: 'Password reset successful. You can now login with your new password',
+                ar: 'تم إعادة تعيين كلمة المرور بنجاح. يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة',
+            },
+        };
+    }
 };
 exports.AuthController = AuthController;
 __decorate([
@@ -962,6 +984,30 @@ __decorate([
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "changePassword", null);
+__decorate([
+    (0, common_1.Post)('forgot-password-otp'),
+    (0, public_decorator_1.Public)(),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    (0, common_1.UseGuards)(rate_limit_guard_1.RateLimitGuard),
+    (0, rate_limit_decorator_1.RateLimit)({ ttl: 900000, limit: 3 }),
+    (0, swagger_1.ApiOperation)({ summary: 'Request password reset OTP' }),
+    (0, swagger_1.ApiBody)({ type: forgot_password_otp_dto_1.ForgotPasswordOtpDto }),
+    __param(0, (0, common_1.Body)(new common_1.ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [forgot_password_otp_dto_1.ForgotPasswordOtpDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "forgotPasswordOtp", null);
+__decorate([
+    (0, common_1.Post)('verify-otp-reset-password'),
+    (0, public_decorator_1.Public)(),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    (0, swagger_1.ApiOperation)({ summary: 'Verify OTP and reset password' }),
+    (0, swagger_1.ApiBody)({ type: verify_otp_reset_password_dto_1.VerifyOtpResetPasswordDto }),
+    __param(0, (0, common_1.Body)(new common_1.ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [verify_otp_reset_password_dto_1.VerifyOtpResetPasswordDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "verifyOtpResetPassword", null);
 exports.AuthController = AuthController = __decorate([
     (0, swagger_1.ApiTags)('Authentication'),
     (0, common_1.Controller)('auth'),

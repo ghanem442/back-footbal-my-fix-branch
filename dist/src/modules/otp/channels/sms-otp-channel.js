@@ -26,7 +26,8 @@ let SmsOtpChannel = SmsOtpChannel_1 = class SmsOtpChannel {
         const accountSid = this.configService.get('sms.twilio.accountSid');
         const authToken = this.configService.get('sms.twilio.authToken');
         this.fromPhoneNumber = this.configService.get('sms.twilio.phoneNumber');
-        if (accountSid && authToken && this.fromPhoneNumber) {
+        if (accountSid && authToken && this.fromPhoneNumber &&
+            accountSid.startsWith('AC') && authToken.length > 10) {
             this.twilioClient = new twilio_1.Twilio(accountSid, authToken);
             this.logger.log('Twilio client initialized successfully');
         }

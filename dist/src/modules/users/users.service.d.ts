@@ -24,4 +24,5 @@ export declare class UsersService {
         newRole: Role;
     }>;
     private invalidateAllUserTokens;
+    updatePassword(userId: string, newPassword: string): Promise<void>;
 }

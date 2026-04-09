@@ -62,10 +62,15 @@ let EmailOtpChannel = EmailOtpChannel_1 = class EmailOtpChannel {
         this.fromName =
             this.configService.get('email.sendgrid.fromName') ||
                 'Football Field Booking';
-        if (apiKey && this.fromEmail) {
-            sgMail.setApiKey(apiKey);
-            this.sendGridConfigured = true;
-            this.logger.log('SendGrid initialized successfully');
+        if (apiKey && this.fromEmail && apiKey.startsWith('SG.')) {
+            try {
+                sgMail.setApiKey(apiKey);
+                this.sendGridConfigured = true;
+                this.logger.log('SendGrid initialized successfully');
+            }
+            catch (error) {
+                this.logger.warn('SendGrid initialization failed. Email OTP will be logged only.');
+            }
         }
         else {
             this.logger.warn('SendGrid credentials not configured. Email OTP will be logged only.');

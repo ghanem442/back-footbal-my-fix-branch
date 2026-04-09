@@ -19,16 +19,18 @@ const users_service_1 = require("../users/users.service");
 const prisma_service_1 = require("../prisma/prisma.service");
 const redis_service_1 = require("../redis/redis.service");
 const email_service_1 = require("../email/email.service");
+const otp_service_1 = require("../otp/otp.service");
 const token_hasher_util_1 = require("./utils/token-hasher.util");
 const schedule_1 = require("@nestjs/schedule");
 let AuthService = AuthService_1 = class AuthService {
-    constructor(jwtService, configService, usersService, prisma, redisService, emailService) {
+    constructor(jwtService, configService, usersService, prisma, redisService, emailService, otpService) {
         this.jwtService = jwtService;
         this.configService = configService;
         this.usersService = usersService;
         this.prisma = prisma;
         this.redisService = redisService;
         this.emailService = emailService;
+        this.otpService = otpService;
         this.logger = new common_1.Logger(AuthService_1.name);
     }
     generateAccessToken(payload) {
@@ -481,6 +483,31 @@ let AuthService = AuthService_1 = class AuthService {
             this.logger.error(`Token cleanup failed: ${errorMessage}`);
         }
     }
+    async sendPasswordResetOtp(email) {
+        const user = await this.usersService.findByEmail(email);
+        if (!user) {
+            this.logger.warn(`Password reset OTP requested for non-existent email: ${email}`);
+            return;
+        }
+        await this.otpService.createAndSendOtp(user.id, 'EMAIL', email, 'PASSWORD_RESET');
+        this.logger.log(`Password reset OTP sent to ${email}`);
+    }
+    async verifyOtpAndResetPassword(email, otp, newPassword) {
+        const user = await this.usersService.findByEmail(email);
+        if (!user) {
+            throw new common_1.UnauthorizedException({
+                code: 'INVALID_CREDENTIALS',
+                message: { en: 'Invalid email or OTP', ar: 'البريد الإلكتروني أو رمز التحقق غير صحيح' },
+            });
+        }
+        await this.otpService.verifyOtp(user.id, otp, 'PASSWORD_RESET');
+        await this.usersService.updatePassword(user.id, newPassword);
+        await this.prisma.refreshToken.updateMany({
+            where: { userId: user.id, isRevoked: false },
+            data: { isRevoked: true, revokedAt: new Date() },
+        });
+        this.logger.log(`Password reset successful for user: ${email}`);
+    }
 };
 exports.AuthService = AuthService;
 __decorate([
@@ -496,6 +523,7 @@ exports.AuthService = AuthService = AuthService_1 = __decorate([
         users_service_1.UsersService,
         prisma_service_1.PrismaService,
         redis_service_1.RedisService,
-        email_service_1.EmailService])
+        email_service_1.EmailService,
+        otp_service_1.OtpService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

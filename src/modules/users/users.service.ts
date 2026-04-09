@@ -253,4 +253,13 @@ export class UsersService {
       throw error;
     }
   }
+
+  async updatePassword(userId: string, newPassword: string): Promise<void> {
+    const bcrypt = require('bcrypt');
+    const passwordHash = await bcrypt.hash(newPassword, 12);
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { passwordHash },
+    });
+  }
 }

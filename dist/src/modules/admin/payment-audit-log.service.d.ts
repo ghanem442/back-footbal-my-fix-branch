@@ -17,43 +17,43 @@ export declare class PaymentAuditLogService {
     log(entry: AuditLogEntry): Promise<void>;
     getPaymentAuditLogs(paymentId: string): Promise<{
         id: string;
+        createdAt: Date;
+        reason: string | null;
+        metadata: import("@prisma/client/runtime/library").JsonValue | null;
         paymentId: string;
         adminId: string;
         action: string;
         previousStatus: string | null;
         newStatus: string | null;
-        reason: string | null;
-        metadata: import("@prisma/client/runtime/library").JsonValue | null;
         ipAddress: string | null;
         userAgent: string | null;
-        createdAt: Date;
     }[]>;
     getPaymentLogs(paymentId: string): Promise<{
         id: string;
+        createdAt: Date;
+        reason: string | null;
+        metadata: import("@prisma/client/runtime/library").JsonValue | null;
         paymentId: string;
         adminId: string;
         action: string;
         previousStatus: string | null;
         newStatus: string | null;
-        reason: string | null;
-        metadata: import("@prisma/client/runtime/library").JsonValue | null;
         ipAddress: string | null;
         userAgent: string | null;
-        createdAt: Date;
     }[]>;
     getAdminAuditLogs(adminId: string, page?: number, limit?: number): Promise<{
         logs: {
             id: string;
+            createdAt: Date;
+            reason: string | null;
+            metadata: import("@prisma/client/runtime/library").JsonValue | null;
             paymentId: string;
             adminId: string;
             action: string;
             previousStatus: string | null;
             newStatus: string | null;
-            reason: string | null;
-            metadata: import("@prisma/client/runtime/library").JsonValue | null;
             ipAddress: string | null;
             userAgent: string | null;
-            createdAt: Date;
         }[];
         pagination: {
             page: number;
@@ -65,16 +65,16 @@ export declare class PaymentAuditLogService {
     getAdminLogs(adminId: string, page?: number, limit?: number): Promise<{
         logs: {
             id: string;
+            createdAt: Date;
+            reason: string | null;
+            metadata: import("@prisma/client/runtime/library").JsonValue | null;
             paymentId: string;
             adminId: string;
             action: string;
             previousStatus: string | null;
             newStatus: string | null;
-            reason: string | null;
-            metadata: import("@prisma/client/runtime/library").JsonValue | null;
             ipAddress: string | null;
             userAgent: string | null;
-            createdAt: Date;
         }[];
         pagination: {
             page: number;

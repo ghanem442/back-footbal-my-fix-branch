@@ -5,6 +5,8 @@ import { RegisterDto } from '@modules/users/dto/register.dto';
 import { LoginDto } from '@modules/users/dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ForgotPasswordOtpDto } from './dto/forgot-password-otp.dto';
+import { VerifyOtpResetPasswordDto } from './dto/verify-otp-reset-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { ResendVerificationDto } from './dto/resend-verification.dto';
@@ -111,6 +113,20 @@ export declare class AuthController {
         currentPassword: string;
         newPassword: string;
     }): Promise<{
+        success: boolean;
+        message: {
+            en: string;
+            ar: string;
+        };
+    }>;
+    forgotPasswordOtp(dto: ForgotPasswordOtpDto): Promise<{
+        success: boolean;
+        message: {
+            en: string;
+            ar: string;
+        };
+    }>;
+    verifyOtpResetPassword(dto: VerifyOtpResetPasswordDto): Promise<{
         success: boolean;
         message: {
             en: string;

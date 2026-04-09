@@ -22,6 +22,7 @@ const config_service_1 = require("../../config/config.service");
 const users_module_1 = require("../users/users.module");
 const redis_module_1 = require("../redis/redis.module");
 const email_module_1 = require("../email/email.module");
+const otp_module_1 = require("../otp/otp.module");
 const rate_limit_guard_1 = require("../../common/guards/rate-limit.guard");
 const auth_logger_service_1 = require("../../common/services/auth-logger.service");
 const prisma_module_1 = require("../prisma/prisma.module");
@@ -44,6 +45,7 @@ exports.AuthModule = AuthModule = __decorate([
             users_module_1.UsersModule,
             redis_module_1.RedisModule,
             email_module_1.EmailModule,
+            otp_module_1.OtpModule,
             prisma_module_1.PrismaModule,
         ],
         controllers: [auth_controller_1.AuthController],

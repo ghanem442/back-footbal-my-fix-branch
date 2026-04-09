@@ -26,6 +26,7 @@ RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
 COPY prisma ./prisma/
+COPY config ./config
 
 RUN npm ci --omit=dev
 
@@ -33,6 +34,9 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 
+# Create uploads directory
+RUN mkdir -p uploads/qr uploads/payment-screenshots uploads/fields
+
 EXPOSE 3000
 
-CMD ["sh", "-c", "npm run prisma:migrate:deploy && npm run start:prod"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/src/main.js"]

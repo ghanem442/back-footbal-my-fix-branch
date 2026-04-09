@@ -29,8 +29,8 @@ export declare class PaymentVerificationService {
             createdAt: Date;
             player: {
                 id: string;
-                email: string;
                 name: string | null;
+                email: string;
                 phoneNumber: string | null;
             };
             booking: {
@@ -58,20 +58,39 @@ export declare class PaymentVerificationService {
             verifiedAt: Date;
         };
         booking: {
+            field: {
+                id: string;
+                name: string;
+                address: string;
+                ownerId: string;
+            };
+            timeSlot: {
+                id: string;
+                createdAt: Date;
+                updatedAt: Date;
+                date: Date;
+                status: import(".prisma/client").$Enums.SlotStatus;
+                fieldId: string;
+                startTime: Date;
+                endTime: Date;
+                price: import("@prisma/client/runtime/library").Decimal;
+            };
             payment: {
                 id: string;
+                createdAt: Date;
+                updatedAt: Date;
+                verifiedAt: Date | null;
+                status: import(".prisma/client").$Enums.PaymentStatus;
                 bookingId: string;
+                amount: import("@prisma/client/runtime/library").Decimal;
                 gateway: import(".prisma/client").$Enums.PaymentGateway;
                 transactionId: string | null;
-                amount: import("@prisma/client/runtime/library").Decimal;
                 currency: string;
-                status: import(".prisma/client").$Enums.PaymentStatus;
                 gatewayResponse: import("@prisma/client/runtime/library").JsonValue | null;
                 referenceCode: string | null;
                 screenshotUrl: string | null;
                 verificationStatus: import(".prisma/client").$Enums.PaymentVerificationStatus;
                 verifiedBy: string | null;
-                verifiedAt: Date | null;
                 rejectionReason: string | null;
                 playerNotes: string | null;
                 userTransactionId: string | null;
@@ -83,39 +102,20 @@ export declare class PaymentVerificationService {
                 paymentExpiresAt: Date | null;
                 isFlagged: boolean;
                 flagReason: string | null;
-                createdAt: Date;
-                updatedAt: Date;
             } | null;
-            field: {
-                id: string;
-                name: string;
-                ownerId: string;
-                address: string;
-            };
             player: {
                 id: string;
                 email: string;
             };
-            timeSlot: {
-                id: string;
-                status: import(".prisma/client").$Enums.SlotStatus;
-                createdAt: Date;
-                updatedAt: Date;
-                fieldId: string;
-                date: Date;
-                startTime: Date;
-                endTime: Date;
-                price: import("@prisma/client/runtime/library").Decimal;
-            };
         } & {
             id: string;
-            status: import(".prisma/client").$Enums.BookingStatus;
             createdAt: Date;
             updatedAt: Date;
             commissionRate: import("@prisma/client/runtime/library").Decimal;
+            status: import(".prisma/client").$Enums.BookingStatus;
+            fieldId: string;
             bookingNumber: string | null;
             playerId: string;
-            fieldId: string;
             timeSlotId: string;
             scheduledDate: Date;
             scheduledStartTime: Date;

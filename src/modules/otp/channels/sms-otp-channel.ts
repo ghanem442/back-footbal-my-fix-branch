@@ -25,7 +25,9 @@ export class SmsOtpChannel implements OtpChannel {
     const authToken = this.configService.get('sms.twilio.authToken');
     this.fromPhoneNumber = this.configService.get('sms.twilio.phoneNumber');
 
-    if (accountSid && authToken && this.fromPhoneNumber) {
+    // Only initialize if all credentials are properly configured
+    if (accountSid && authToken && this.fromPhoneNumber && 
+        accountSid.startsWith('AC') && authToken.length > 10) {
       this.twilioClient = new Twilio(accountSid, authToken);
       this.logger.log('Twilio client initialized successfully');
     } else {
