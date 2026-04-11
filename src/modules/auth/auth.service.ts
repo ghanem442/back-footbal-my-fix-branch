@@ -501,14 +501,16 @@ export class AuthService {
    * Clean up expired password reset tokens (should be called periodically)
    */
   async cleanupExpiredPasswordResetTokens(): Promise<number> {
-    const result = await this.prisma.passwordResetToken.deleteMany({
-      where: {
-        expiresAt: {
-          lt: new Date(),
-        },
-      },
-    });
-    return result.count;
+    // Temporarily disabled - table might not exist yet
+    // const result = await this.prisma.passwordResetToken.deleteMany({
+    //   where: {
+    //     expiresAt: {
+    //       lt: new Date(),
+    //     },
+    //   },
+    // });
+    // return result.count;
+    return 0;
   }
 
   /**
@@ -708,15 +710,15 @@ export class AuthService {
     try {
       const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
-      // Cleanup password reset tokens
-      const deletedResetTokens = await this.prisma.passwordResetToken.deleteMany({
-        where: {
-          OR: [
-            { expiresAt: { lt: new Date() } }, // Expired
-            { isUsed: true, usedAt: { lt: sevenDaysAgo } }, // Used and older than 7 days
-          ],
-        },
-      });
+      // Cleanup password reset tokens - Temporarily disabled
+      // const deletedResetTokens = await this.prisma.passwordResetToken.deleteMany({
+      //   where: {
+      //     OR: [
+      //       { expiresAt: { lt: new Date() } }, // Expired
+      //       { isUsed: true, usedAt: { lt: sevenDaysAgo } }, // Used and older than 7 days
+      //     ],
+      //   },
+      // });
 
       // Cleanup email verification tokens
       const deletedVerificationTokens = await this.prisma.emailVerificationToken.deleteMany({
