@@ -13,21 +13,34 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
     let enhancedUrl = databaseUrl;
     if (!hasPoolSettings && databaseUrl) {
       const separator = databaseUrl.includes('?') ? '&' : '?';
-      // Increased timeouts for Railway
-      enhancedUrl = `${databaseUrl}${separator}connection_limit=20&pool_timeout=60&connect_timeout=60`;
+      // Reasonable timeouts - not hiding the problem
+      enhancedUrl = `${databaseUrl}${separator}connection_limit=10&pool_timeout=10&connect_timeout=10`;
       console.log('📊 Enhanced DATABASE_URL with connection pool settings');
-      console.log('   - connection_limit: 20');
-      console.log('   - pool_timeout: 60s');
-      console.log('   - connect_timeout: 60s');
+      console.log('   - connection_limit: 10');
+      console.log('   - pool_timeout: 10s');
+      console.log('   - connect_timeout: 10s');
     }
 
     super({
-      log: ['query', 'error', 'warn'], // Added 'query' to see actual SQL
+      log: [
+        { level: 'query', emit: 'event' },
+        { level: 'error', emit: 'stdout' },
+        { level: 'warn', emit: 'stdout' },
+      ],
       datasources: {
         db: {
           url: enhancedUrl,
         },
       },
+    });
+
+    // Log SQL queries with timing
+    (this as any).$on('query', (e: any) => {
+      console.log('📝 SQL Query:', e.query);
+      console.log('⏱️  Duration:', e.duration, 'ms');
+      if (e.params) {
+        console.log('📋 Params:', e.params);
+      }
     });
   }
 

@@ -199,41 +199,21 @@ export class FieldsService {
       const countTime = Date.now() - countStart;
       console.log(`✅ STEP 1 DONE: Found ${total} fields (${countTime}ms)\n`);
 
-      // STEP 2: Fetch fields (MINIMAL DATA)
-      console.log('🔍 STEP 2: Fetching fields (minimal query)...');
+      // STEP 2: Fetch fields - ULTRA MINIMAL (for testing)
+      console.log('🔍 STEP 2: Fetching fields (ULTRA MINIMAL - testing mode)...');
       const queryStart = Date.now();
       
+      // ULTRA MINIMAL QUERY - Just ID and name for testing
       const fields = await this.prisma.field.findMany({
         where,
         select: {
           id: true,
           name: true,
-          description: true,
           address: true,
           latitude: true,
           longitude: true,
-          commissionRate: true,
           averageRating: true,
-          totalReviews: true,
           createdAt: true,
-          ownerId: true,
-          // Minimal image data - only primary image URL
-          images: {
-            select: {
-              url: true,
-            },
-            where: {
-              isPrimary: true,
-            },
-            take: 1,
-          },
-          // Minimal owner data
-          owner: {
-            select: {
-              id: true,
-              email: true,
-            },
-          },
         },
         orderBy: { createdAt: 'desc' },
         skip,
@@ -252,6 +232,7 @@ export class FieldsService {
       console.log('TOTAL TIME:', totalTime, 'ms');
       console.log('Fields Returned:', fields.length);
       console.log('Total Fields:', total);
+      console.log('Performance:', totalTime < 1000 ? '🟢 FAST' : totalTime < 3000 ? '🟡 ACCEPTABLE' : '🔴 SLOW');
       console.log('========================================\n');
 
       return {
@@ -271,6 +252,7 @@ export class FieldsService {
       console.error('Time before error:', totalTime, 'ms');
       console.error('Error Type:', error instanceof Error ? error.constructor.name : typeof error);
       console.error('Error Message:', error instanceof Error ? error.message : String(error));
+      console.error('Error Code:', (error as any).code || 'N/A');
       console.error('Error Stack:', error instanceof Error ? error.stack : 'N/A');
       console.error('========================================\n');
       throw error;
