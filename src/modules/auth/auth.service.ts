@@ -130,10 +130,23 @@ export class AuthService {
    * @throws UnauthorizedException if credentials are invalid
    */
   async validateCredentials(email: string, password: string): Promise<User> {
+    console.log('🔍 STEP 1: validateCredentials - START');
+    console.log('  - Email:', email);
+    console.log('  - Password length:', password?.length || 0);
+    
     // Find user by email
+    console.log('🔍 STEP 2: Finding user by email...');
     const user = await this.usersService.findByEmail(email);
+    console.log('🔍 STEP 2 RESULT:', {
+      userFound: !!user,
+      userId: user?.id,
+      userEmail: user?.email,
+      hasPasswordHash: !!user?.passwordHash,
+      passwordHashLength: user?.passwordHash?.length || 0,
+    });
     
     if (!user) {
+      console.log('❌ STEP 2 FAILED: User not found');
       throw new UnauthorizedException({
         code: 'INVALID_CREDENTIALS',
         message: {
@@ -144,7 +157,9 @@ export class AuthService {
     }
 
     // Check if user has a password (not OAuth-only user)
+    console.log('🔍 STEP 3: Checking if user has password hash...');
     if (!user.passwordHash) {
+      console.log('❌ STEP 3 FAILED: User has no password hash (OAuth user?)');
       throw new UnauthorizedException({
         code: 'INVALID_CREDENTIALS',
         message: {
@@ -153,14 +168,23 @@ export class AuthService {
         },
       });
     }
+    console.log('✅ STEP 3 PASSED: User has password hash');
 
     // Verify password
+    console.log('🔍 STEP 4: Verifying password...');
+    console.log('  - Calling usersService.verifyPassword');
     const isPasswordValid = await this.usersService.verifyPassword(
       password,
       user.passwordHash,
     );
+    console.log('🔍 STEP 4 RESULT:', {
+      isPasswordValid,
+      passwordProvided: password?.substring(0, 3) + '***',
+      hashPrefix: user.passwordHash?.substring(0, 10) + '...',
+    });
 
     if (!isPasswordValid) {
+      console.log('❌ STEP 4 FAILED: Password does not match');
       throw new UnauthorizedException({
         code: 'INVALID_CREDENTIALS',
         message: {
@@ -169,6 +193,9 @@ export class AuthService {
         },
       });
     }
+    
+    console.log('✅ STEP 4 PASSED: Password is valid');
+    console.log('✅ validateCredentials - SUCCESS');
 
     return user;
   }
