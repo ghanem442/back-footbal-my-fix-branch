@@ -172,6 +172,11 @@ export class FieldsService {
    * @returns Paginated field list
    */
   async findAll(queryDto: QueryFieldsDto, ownerId?: string) {
+    console.log('🔍 FIELDS QUERY START');
+    console.log('  - Page:', queryDto.page);
+    console.log('  - Limit:', queryDto.limit);
+    console.log('  - Owner ID:', ownerId || 'none');
+    
     const { page = 1, limit = 10 } = queryDto;
     const skip = (page - 1) * limit;
 
@@ -181,9 +186,14 @@ export class FieldsService {
       where.ownerId = ownerId;
     }
 
+    console.log('🔍 STEP 1: Counting fields...');
+    const countStart = Date.now();
     // Get total count of non-deleted fields
     const total = await this.prisma.field.count({ where });
+    console.log(`✅ STEP 1 DONE: Found ${total} fields (${Date.now() - countStart}ms)`);
 
+    console.log('🔍 STEP 2: Fetching fields with relations...');
+    const queryStart = Date.now();
     // Get paginated fields with related data
     const fields = await this.prisma.field.findMany({
       where,
@@ -204,6 +214,8 @@ export class FieldsService {
       skip,
       take: limit,
     });
+    console.log(`✅ STEP 2 DONE: Fetched ${fields.length} fields (${Date.now() - queryStart}ms)`);
+    console.log(`✅ TOTAL QUERY TIME: ${Date.now() - countStart}ms`);
 
     return {
       data: fields,

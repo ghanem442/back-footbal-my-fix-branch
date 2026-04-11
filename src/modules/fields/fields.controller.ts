@@ -120,12 +120,31 @@ export class FieldsController {
     @Query() queryDto: QueryFieldsDto,
     @CurrentUser('userId') userId?: string,
   ) {
+    console.log('\n========================================');
+    console.log('📋 GET FIELDS REQUEST');
+    console.log('========================================');
+    console.log('Timestamp:', new Date().toISOString());
+    console.log('Query:', JSON.stringify(queryDto, null, 2));
+    console.log('User ID:', userId || 'anonymous');
+    console.log('========================================\n');
+
+    const startTime = Date.now();
+    
     // If myFields=true, filter by current user's fields
     const filterByOwner = queryDto.myFields === true && userId;
     
     const result = await this.fieldsService.findAll(queryDto, filterByOwner ? userId : undefined);
 
     const message = await this.i18n.getBilingualMessage('field.listRetrieved');
+
+    const totalTime = Date.now() - startTime;
+    console.log('\n========================================');
+    console.log('✅ GET FIELDS SUCCESS');
+    console.log('========================================');
+    console.log('Total Time:', totalTime, 'ms');
+    console.log('Fields Returned:', result.data.length);
+    console.log('Total Fields:', result.meta.total);
+    console.log('========================================\n');
 
     return {
       success: true,
