@@ -188,44 +188,78 @@ export class FieldsService {
 
     console.log('🔍 STEP 1: Counting fields...');
     const countStart = Date.now();
-    // Get total count of non-deleted fields
-    const total = await this.prisma.field.count({ where });
-    console.log(`✅ STEP 1 DONE: Found ${total} fields (${Date.now() - countStart}ms)`);
+    
+    try {
+      // Get total count of non-deleted fields
+      const total = await this.prisma.field.count({ where });
+      console.log(`✅ STEP 1 DONE: Found ${total} fields (${Date.now() - countStart}ms)`);
 
-    console.log('🔍 STEP 2: Fetching fields with relations...');
-    const queryStart = Date.now();
-    // Get paginated fields with related data
-    const fields = await this.prisma.field.findMany({
-      where,
-      include: {
-        images: {
-          orderBy: [{ isPrimary: 'desc' }, { order: 'asc' }],
-          take: 1, // Only get the primary/first image for listing
-        },
-        owner: {
-          select: {
-            id: true,
-            email: true,
-            phoneNumber: true,
+      console.log('🔍 STEP 2: Fetching fields (optimized query)...');
+      const queryStart = Date.now();
+      
+      // Optimized query: Use select instead of include to reduce data transfer
+      const fields = await this.prisma.field.findMany({
+        where,
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          address: true,
+          latitude: true,
+          longitude: true,
+          commissionRate: true,
+          averageRating: true,
+          totalReviews: true,
+          createdAt: true,
+          updatedAt: true,
+          ownerId: true,
+          // Get only the primary image
+          images: {
+            select: {
+              id: true,
+              url: true,
+              isPrimary: true,
+              order: true,
+            },
+            where: {
+              isPrimary: true,
+            },
+            take: 1,
+          },
+          // Get minimal owner info
+          owner: {
+            select: {
+              id: true,
+              email: true,
+              phoneNumber: true,
+            },
           },
         },
-      },
-      orderBy: { createdAt: 'desc' },
-      skip,
-      take: limit,
-    });
-    console.log(`✅ STEP 2 DONE: Fetched ${fields.length} fields (${Date.now() - queryStart}ms)`);
-    console.log(`✅ TOTAL QUERY TIME: ${Date.now() - countStart}ms`);
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: limit,
+      });
+      
+      console.log(`✅ STEP 2 DONE: Fetched ${fields.length} fields (${Date.now() - queryStart}ms)`);
+      console.log(`✅ TOTAL QUERY TIME: ${Date.now() - countStart}ms`);
 
-    return {
-      data: fields,
-      meta: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
-      },
-    };
+      return {
+        data: fields,
+        meta: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
+      };
+    } catch (error) {
+      console.error('❌ FIELDS QUERY ERROR:', error);
+      console.error('Error details:', {
+        message: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+      });
+      throw error;
+    }
   }
 
   /**
