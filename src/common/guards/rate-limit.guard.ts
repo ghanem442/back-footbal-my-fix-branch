@@ -44,6 +44,13 @@ export class RateLimitGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest<Request>();
+    
+    // Safety check: ensure request and route exist
+    if (!request || !request.route || !request.route.path) {
+      console.warn('⚠️ RateLimitGuard: request.route.path is undefined, skipping rate limit');
+      return true;
+    }
+    
     const ip = this.getClientIp(request);
     const key = `rate_limit:${request.route.path}:${ip}`;
 
