@@ -77,7 +77,8 @@ async function bootstrap() {
   });
 
   const i18nService = app.get(I18nService) as I18nService<Record<string, unknown>>;
-  app.useGlobalFilters(new BilingualExceptionFilter(i18nService));
+  // Temporarily disabled to see raw errors
+  // app.useGlobalFilters(new BilingualExceptionFilter(i18nService));
   app.useGlobalPipes(new I18nValidationPipe());
   app.useGlobalInterceptors(
     new BilingualResponseInterceptor(),
