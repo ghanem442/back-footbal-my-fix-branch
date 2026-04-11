@@ -430,6 +430,7 @@ export class AuthController {
       console.log('Error Message:', error instanceof Error ? error.message : String(error));
       console.log('Error Code:', (error as any).code || 'N/A');
       console.log('Error Status:', (error as any).status || (error as any).statusCode || 'N/A');
+      console.log('Full Error Object:', JSON.stringify(error, null, 2));
       console.log('Error Stack:', error instanceof Error ? error.stack : 'N/A');
       console.log('========================================\n');
 
