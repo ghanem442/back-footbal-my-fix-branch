@@ -35,36 +35,39 @@ async function bootstrap() {
 
   app.set('trust proxy', 1);
 
+  // Relaxed Helmet configuration for Flutter Web compatibility
   app.use(
     helmet({
-      hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
-      noSniff: true,
-      frameguard: { action: 'deny' },
-      contentSecurityPolicy: {
-        directives: {
-          defaultSrc: ["'self'"],
-          styleSrc: ["'self'", "'unsafe-inline'"],
-          scriptSrc: ["'self'", "'unsafe-inline'"],
-          imgSrc: ["'self'", 'data:', 'https:'],
-        },
-      },
+      crossOriginEmbedderPolicy: false,
+      crossOriginResourcePolicy: { policy: 'cross-origin' },
+      contentSecurityPolicy: false, // Disable CSP for now to avoid blocking Flutter
     }),
   );
 
   const allowedOrigins = getAllowedOrigins();
   console.log('🌐 CORS allowed origins:', allowedOrigins);
 
+  // CORS configuration - Allow all origins for Flutter Web
   app.enableCors({
-    origin: '*',
+    origin: true, // Allow all origins
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Accept-Language'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'Accept-Language',
+      'Accept',
+      'Origin',
+      'X-Requested-With',
+    ],
     exposedHeaders: [
       'X-RateLimit-Limit',
       'X-RateLimit-Remaining',
       'X-RateLimit-Reset',
     ],
     maxAge: 86400,
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   });
 
   app.setGlobalPrefix('api/v1', {
@@ -74,6 +77,10 @@ async function bootstrap() {
   // Serve static files from uploads directory
   app.useStaticAssets('uploads', {
     prefix: '/uploads/',
+    setHeaders: (res) => {
+      res.set('Access-Control-Allow-Origin', '*');
+      res.set('Cross-Origin-Resource-Policy', 'cross-origin');
+    },
   });
 
   const i18nService = app.get(I18nService) as I18nService<Record<string, unknown>>;
@@ -118,6 +125,8 @@ async function bootstrap() {
   
   console.log(`🚀 Server is running on http://${host}:${port}`);
   console.log(`📱 Access from mobile: http://<YOUR_LAN_IP>:${port}`);
+  console.log('🌐 CORS: Enabled for all origins');
+  console.log('🔒 Helmet: Relaxed for Flutter Web compatibility');
 }
 
 bootstrap();
