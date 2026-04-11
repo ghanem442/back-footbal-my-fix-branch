@@ -730,8 +730,9 @@ export class AuthService {
         },
       });
 
+      // Temporarily disabled logging since deletedResetTokens is commented out
       this.logger.log(
-        `Token cleanup completed: ${deletedResetTokens.count} password reset tokens, ${deletedVerificationTokens.count} email verification tokens deleted`,
+        `Token cleanup completed: ${deletedVerificationTokens.count} email verification tokens deleted`,
       );
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
