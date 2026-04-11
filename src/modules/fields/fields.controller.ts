@@ -126,15 +126,26 @@ export class FieldsController {
     console.log('Timestamp:', new Date().toISOString());
     console.log('Query:', JSON.stringify(queryDto, null, 2));
     console.log('User ID:', userId || 'anonymous');
+    console.log('myFields param:', queryDto.myFields);
     console.log('========================================\n');
 
     const startTime = Date.now();
     
     try {
-      // If myFields=true, filter by current user's fields
-      const filterByOwner = queryDto.myFields === true && userId;
+      // If myFields=true AND user is logged in, filter by current user's fields
+      // Otherwise, show all fields
+      let filterByOwner: string | undefined = undefined;
       
-      const result = await this.fieldsService.findAll(queryDto, filterByOwner ? userId : undefined);
+      if (queryDto.myFields === true) {
+        if (userId) {
+          filterByOwner = userId;
+          console.log('✅ Filtering by owner:', userId);
+        } else {
+          console.log('⚠️  myFields=true but user not logged in, showing all fields');
+        }
+      }
+      
+      const result = await this.fieldsService.findAll(queryDto, filterByOwner);
 
       const message = await this.i18n.getBilingualMessage('field.listRetrieved');
 
