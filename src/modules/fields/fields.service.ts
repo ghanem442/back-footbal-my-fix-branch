@@ -260,6 +260,17 @@ export class FieldsService {
   }
 
   /**
+   * Test simple count query - for debugging
+   */
+  async testSimpleCount(): Promise<number> {
+    console.log('🧪 Running simple count query...');
+    const start = Date.now();
+    const count = await this.prisma.field.count();
+    console.log(`✅ Count result: ${count} (${Date.now() - start}ms)`);
+    return count;
+  }
+
+  /**
    * Search for fields within a geographic radius using PostGIS
    * @param searchDto - Search parameters including coordinates, radius, and filters
    * @returns Fields within radius sorted by distance

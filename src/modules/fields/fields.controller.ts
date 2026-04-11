@@ -130,29 +130,78 @@ export class FieldsController {
 
     const startTime = Date.now();
     
-    // If myFields=true, filter by current user's fields
-    const filterByOwner = queryDto.myFields === true && userId;
-    
-    const result = await this.fieldsService.findAll(queryDto, filterByOwner ? userId : undefined);
+    try {
+      // If myFields=true, filter by current user's fields
+      const filterByOwner = queryDto.myFields === true && userId;
+      
+      const result = await this.fieldsService.findAll(queryDto, filterByOwner ? userId : undefined);
 
-    const message = await this.i18n.getBilingualMessage('field.listRetrieved');
+      const message = await this.i18n.getBilingualMessage('field.listRetrieved');
 
-    const totalTime = Date.now() - startTime;
+      const totalTime = Date.now() - startTime;
+      console.log('\n========================================');
+      console.log('✅ GET FIELDS SUCCESS');
+      console.log('========================================');
+      console.log('Total Time:', totalTime, 'ms');
+      console.log('Fields Returned:', result.data.length);
+      console.log('Total Fields:', result.meta.total);
+      console.log('========================================\n');
+
+      return {
+        success: true,
+        data: result.data,
+        meta: result.meta,
+        message,
+        timestamp: new Date().toISOString(),
+      };
+    } catch (error) {
+      const totalTime = Date.now() - startTime;
+      console.error('\n========================================');
+      console.error('❌ GET FIELDS ERROR');
+      console.error('========================================');
+      console.error('Time before error:', totalTime, 'ms');
+      console.error('Error:', error);
+      console.error('========================================\n');
+      throw error;
+    }
+  }
+
+  @Public()
+  @Get('test-simple')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: '[TEST] Simple database test',
+    description: 'Test endpoint to check database connection speed',
+  })
+  async testSimple() {
     console.log('\n========================================');
-    console.log('✅ GET FIELDS SUCCESS');
+    console.log('🧪 TEST SIMPLE QUERY');
     console.log('========================================');
-    console.log('Total Time:', totalTime, 'ms');
-    console.log('Fields Returned:', result.data.length);
-    console.log('Total Fields:', result.meta.total);
-    console.log('========================================\n');
-
-    return {
-      success: true,
-      data: result.data,
-      meta: result.meta,
-      message,
-      timestamp: new Date().toISOString(),
-    };
+    
+    const startTime = Date.now();
+    
+    try {
+      // Just count - simplest possible query
+      const count = await this.fieldsService.testSimpleCount();
+      const totalTime = Date.now() - startTime;
+      
+      console.log('✅ Count:', count);
+      console.log('✅ Time:', totalTime, 'ms');
+      console.log('========================================\n');
+      
+      return {
+        success: true,
+        count,
+        time: totalTime,
+        status: totalTime < 100 ? 'FAST' : totalTime < 500 ? 'OK' : 'SLOW',
+      };
+    } catch (error) {
+      const totalTime = Date.now() - startTime;
+      console.error('❌ Error:', error);
+      console.error('Time:', totalTime, 'ms');
+      console.error('========================================\n');
+      throw error;
+    }
   }
 
   @Public()
