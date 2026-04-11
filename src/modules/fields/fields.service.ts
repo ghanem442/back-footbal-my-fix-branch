@@ -172,11 +172,16 @@ export class FieldsService {
    * @returns Paginated field list
    */
   async findAll(queryDto: QueryFieldsDto, ownerId?: string) {
+    console.log('\n========================================');
     console.log('🔍 FIELDS QUERY START');
-    console.log('  - Page:', queryDto.page);
-    console.log('  - Limit:', queryDto.limit);
-    console.log('  - Owner ID:', ownerId || 'none');
+    console.log('========================================');
+    console.log('Timestamp:', new Date().toISOString());
+    console.log('Page:', queryDto.page);
+    console.log('Limit:', queryDto.limit);
+    console.log('Owner ID:', ownerId || 'none');
+    console.log('========================================\n');
     
+    const totalStartTime = Date.now();
     const { page = 1, limit = 10 } = queryDto;
     const skip = (page - 1) * limit;
 
@@ -186,18 +191,18 @@ export class FieldsService {
       where.ownerId = ownerId;
     }
 
-    console.log('🔍 STEP 1: Counting fields...');
-    const countStart = Date.now();
-    
     try {
-      // Get total count of non-deleted fields
+      // STEP 1: Count
+      console.log('🔍 STEP 1: Counting fields...');
+      const countStart = Date.now();
       const total = await this.prisma.field.count({ where });
-      console.log(`✅ STEP 1 DONE: Found ${total} fields (${Date.now() - countStart}ms)`);
+      const countTime = Date.now() - countStart;
+      console.log(`✅ STEP 1 DONE: Found ${total} fields (${countTime}ms)\n`);
 
-      console.log('🔍 STEP 2: Fetching fields (optimized query)...');
+      // STEP 2: Fetch fields (MINIMAL DATA)
+      console.log('🔍 STEP 2: Fetching fields (minimal query)...');
       const queryStart = Date.now();
       
-      // Optimized query: Use select instead of include to reduce data transfer
       const fields = await this.prisma.field.findMany({
         where,
         select: {
@@ -211,27 +216,22 @@ export class FieldsService {
           averageRating: true,
           totalReviews: true,
           createdAt: true,
-          updatedAt: true,
           ownerId: true,
-          // Get only the primary image
+          // Minimal image data - only primary image URL
           images: {
             select: {
-              id: true,
               url: true,
-              isPrimary: true,
-              order: true,
             },
             where: {
               isPrimary: true,
             },
             take: 1,
           },
-          // Get minimal owner info
+          // Minimal owner data
           owner: {
             select: {
               id: true,
               email: true,
-              phoneNumber: true,
             },
           },
         },
@@ -240,8 +240,19 @@ export class FieldsService {
         take: limit,
       });
       
-      console.log(`✅ STEP 2 DONE: Fetched ${fields.length} fields (${Date.now() - queryStart}ms)`);
-      console.log(`✅ TOTAL QUERY TIME: ${Date.now() - countStart}ms`);
+      const queryTime = Date.now() - queryStart;
+      const totalTime = Date.now() - totalStartTime;
+      
+      console.log(`✅ STEP 2 DONE: Fetched ${fields.length} fields (${queryTime}ms)\n`);
+      console.log('========================================');
+      console.log('✅ QUERY COMPLETE');
+      console.log('========================================');
+      console.log('Count Time:', countTime, 'ms');
+      console.log('Query Time:', queryTime, 'ms');
+      console.log('TOTAL TIME:', totalTime, 'ms');
+      console.log('Fields Returned:', fields.length);
+      console.log('Total Fields:', total);
+      console.log('========================================\n');
 
       return {
         data: fields,
@@ -253,11 +264,15 @@ export class FieldsService {
         },
       };
     } catch (error) {
-      console.error('❌ FIELDS QUERY ERROR:', error);
-      console.error('Error details:', {
-        message: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined,
-      });
+      const totalTime = Date.now() - totalStartTime;
+      console.error('\n========================================');
+      console.error('❌ FIELDS QUERY ERROR');
+      console.error('========================================');
+      console.error('Time before error:', totalTime, 'ms');
+      console.error('Error Type:', error instanceof Error ? error.constructor.name : typeof error);
+      console.error('Error Message:', error instanceof Error ? error.message : String(error));
+      console.error('Error Stack:', error instanceof Error ? error.stack : 'N/A');
+      console.error('========================================\n');
       throw error;
     }
   }
