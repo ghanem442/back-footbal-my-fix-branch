@@ -49,7 +49,16 @@ async function bootstrap() {
 
   // CORS configuration - Allow all origins for Flutter Web
   app.enableCors({
-    origin: true, // Allow all origins
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      
+      const allowed = getAllowedOrigins();
+      if (allowed.includes(origin) || isLocalhostOrigin(origin)) {
+        callback(null, true);
+      } else {
+        callback(null, true); 
+      }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
     allowedHeaders: [
